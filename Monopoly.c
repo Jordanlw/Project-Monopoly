@@ -739,32 +739,35 @@ int setupPlayers(struct player ***players,int *amntPlayers)
 		unsigned int money = 0;
 		char *name = malloc(13);
 		
-		puts("Add a player? Yes or No");
-		while(1)
+		if(*amntPlayers != 0)
 		{
-			retr = getchar();
+			puts("Add a player? Yes or No");
 			while(1)
 			{
-				char res = getchar();
-				if(res == '\n')
+				retr = getchar();
+				while(1)
 				{
+					char res = getchar();
+					if(res == '\n')
+					{
+						break;
+					}
+				}
+				if(retr == 'Y' || retr == 'y')
+				{
+					leave = 0;
 					break;
 				}
-			}
-			if(retr == 'Y' || retr == 'y')
-			{
-				leave = 0;
-				break;
-			}
-			else if(retr == 'N' || retr == 'n')
-			{
-				leave = 1;
-				break;
-			}
-			else
-			{	
-				puts("ERROR: unable to decipher input :: enter Y for Yes or N for No");
-				printf("Yes or No? ");
+				else if(retr == 'N' || retr == 'n')
+				{
+					leave = 1;
+					break;
+				}
+				else
+				{	
+					puts("ERROR: unable to decipher input :: enter Y for Yes or N for No");
+					printf("Yes or No? ");
+				}
 			}
 		}
 		if(leave == 1)
@@ -820,8 +823,6 @@ int setupPlayers(struct player ***players,int *amntPlayers)
 				break;
 			}
 		}
-		//DEBUG
-		//printf("%d\n",money);
 		
 		if(setupPlayerStruct(*players,money,name,*amntPlayers))
 		{
