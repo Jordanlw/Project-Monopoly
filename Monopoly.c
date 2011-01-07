@@ -392,6 +392,10 @@ void houseStatus(int amntPlayers,
 			printf(" Mortgaged: No");
 		}
 		printf(" Hotels: %d",(properties[i])->hotels);
+		if((properties[i])->type != 1)
+		{
+			printf(" Price: $%d",(properties[i])->value);
+		}
 		if(current == -1)
 		{
 			int k = 0;
@@ -410,14 +414,7 @@ void houseStatus(int amntPlayers,
 					m = 1;
 				}
 			}
-			if(m == 0)
-			{
-				puts("");
-			}
-			else
-			{
-				puts("");
-			}
+			puts("");
 		}
 		if(current != -1)
 		{
