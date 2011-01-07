@@ -1,0 +1,23 @@
+#Example entry below:
+#"Property Name" $100
+#Example entry above
+#Follow the format exactly, or errors will occur.
+"1" $120 
+"2" $135
+"3" $120
+"4" $245
+"5" $265
+"6" $245
+"7" $265
+"8" $725
+"9" $725
+"10" $765
+"11" $725
+"12" $55
+"13" $55
+"14" $55
+"15" $55
+"16" $975
+"17" $1000
+"18" $975
+"19" $975
