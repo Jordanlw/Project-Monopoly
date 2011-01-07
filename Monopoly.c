@@ -270,6 +270,7 @@ void mortgage(struct property **properties,
 			  int current)
 {
 	int i = 0;
+	int once = 0;
 	int present = 0;
 	char retr = 0;
 	while(1)
@@ -284,6 +285,11 @@ void mortgage(struct property **properties,
 			{
 				if((properties[i])->hotels > 0)
 				{
+					if(once)
+					{
+						break;
+					}
+					once = 1;
 					puts("You need to sell your hotels on the property first.");
 					break;
 				}
@@ -294,6 +300,10 @@ void mortgage(struct property **properties,
 		}
 		if(present == 0)
 		{
+			if(once)
+			{
+				return;
+			}
 			puts("You don't own any houses, Can not mortage yet.");
 			return;
 		}	
