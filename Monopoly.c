@@ -556,9 +556,7 @@ int takeTurn(struct property **properties,struct player **player,int amntPropert
 	int diceTwo = rollDice(urandom,1,6);
 	int whatReturn = 0;
 	int i = 0;
-	int j = 0;
-	int tmp = 0;
-	int k = 0;
+	int corn = 0;
 	char retr = 0;
 	char res = 0;
 	int purchase = 0;
@@ -575,23 +573,18 @@ int takeTurn(struct property **properties,struct player **player,int amntPropert
 	}
 	for(i = 0;i < SIDES;i++)
 	{
-		if(corners[i] < (player[current])->position)
+		if(properties[(player[current])->position-1]->type == 1)
 		{
-			j++;
-		}
-		if(corners[i] == (player[current])->position)
-		{
-			k = 1;
+			corn = 1;
 		}
 	}
-	tmp = (player[current])->position;
-	tmp -= j;
-	if(k == 0 && (properties[tmp-1])->owner == -1)
+	if(corn == 0 && (properties[(player[current])->position-1])->owner == -1)
 	{
 		while(1)
 		{
 			printf("\"%s\", would you like to buy \"%s\" on position #%d for $%d\n",
-			(player[current])->id,(properties[tmp-1])->name,(player[current])->position,(properties[tmp-1])->value);
+			(player[current])->id,(properties[(player[current])->position-1])->name,
+			(player[current])->position,(properties[(player[current])->position-1])->value);
 			retr = getchar();
 			if(retr == '\n')
 			{
@@ -624,11 +617,11 @@ int takeTurn(struct property **properties,struct player **player,int amntPropert
 			}
 		}
 	}
-	else if(k == 0)
+	else if(corn == 0)
 	{
 		printf("\"%s\", you are currently on position #%d which is owned by \"%s\",\nit currently "
-		,(player[current])->id,(player[current])->position,(player[(properties[tmp-1])->owner])->id);
-	    if((properties[tmp-1])->mortgaged)
+		,(player[current])->id,(player[current])->position,(player[(properties[(player[current])->position-1])->owner])->id);
+	    if((properties[(player[current])->position-1])->mortgaged)
 	    {
 	    	puts("is mortgaged.");
     	}
@@ -643,11 +636,11 @@ int takeTurn(struct property **properties,struct player **player,int amntPropert
 	}
 	if(purchase)
 	{
-		int result = (player[current])->money - (properties[tmp-1])->value;
+		int result = (player[current])->money - (properties[(player[current])->position-1])->value;
 		if(result >= 0)
 		{
-			(player[current])->money -= (properties[tmp-1])->value;
-			(properties[tmp-1])->owner = current;
+			(player[current])->money -= (properties[(player[current])->position-1])->value;
+			(properties[(player[current])->position-1])->owner = current;
 			printf("Congratulations \"%s\", you now own the property!\n",(player[current])->id);
 		}
 		else
@@ -657,9 +650,6 @@ int takeTurn(struct property **properties,struct player **player,int amntPropert
 		}
 		
 	}
-		
-	//DEBUG
-	//printf("Position: %d\n",(player[current])->position);
 	
 	return whatReturn;
 }
