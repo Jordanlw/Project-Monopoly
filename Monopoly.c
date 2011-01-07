@@ -309,7 +309,7 @@ void mortgage(struct property **properties,
 		}	
 		houseStatus(0,amntProperties,player,properties,current);
 		i = 0;
-		puts("Please select a property.");
+		puts("Please select a property, mortgage rate 10\% of value.");
 		while(1)
 		{
 			retr = getchar();
@@ -662,6 +662,12 @@ int takeTurn(struct property **properties,struct player **player,int amntPropert
     	else
     	{
     		puts("isn't mortgaged.");
+		}
+		if((properties[(player[current])->position-1])->mortgaged == 0)
+		{
+			int tmp = (properties[(player[current])->position-1])->value / 5;
+			printf("For landing on rented property, you are being charge $%d\n",tmp);
+			(player[current])->money -= tmp;
 		}
 	}
 	else
