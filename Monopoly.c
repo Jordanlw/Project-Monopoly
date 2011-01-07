@@ -728,6 +728,8 @@ void setFourCorners(int properties,int *corners)
 int setupPlayers(struct player ***players,int *amntPlayers)
 {
 	*amntPlayers = 0;
+	int forAll = 0;
+	unsigned int oldMoney = 0;
 	while(1)
 	{
 		char retr = 0;
@@ -800,27 +802,72 @@ int setupPlayers(struct player ***players,int *amntPlayers)
 				}
 			}
 		}
-		puts("Please enter the amount of money for players");
-		while(1)
+		if(forAll == 0)
 		{
-			retr = getchar();
-			if(retr == '\n')
+			puts("Do you want money given, to be equal?");
+			while(1)
 			{
-				break;
-			}
-			money += retr - '0';
-			retr = getchar();
-			if(retr != '\n')
-			{
-				money *= 10;
-				ungetc(retr,stdin);
-			}
-			else
-			{
-				break;
+				retr = getchar();
+				while(1)
+				{
+					char res = getchar();
+					if(res == '\n')
+					{
+						break;
+					}
+				}
+				if(retr == 'Y' || retr == 'y')
+				{
+					forAll = 1;
+					break;
+				}
+				else if(retr == 'N' || retr == 'n')
+				{
+					forAll = -1;
+					break;
+				}
+				else
+				{	
+					puts("ERROR: unable to decipher input :: enter Y for Yes or N for No");
+				}
 			}
 		}
-		
+		if(forAll == -1 || forAll == 1)
+		{
+			if(forAll == 1)
+			{
+				forAll++;
+			}
+			puts("Please enter the amount of money for players");
+			while(1)
+			{
+				retr = getchar();
+				if(retr == '\n')
+				{
+					break;
+				}
+				money += retr - '0';
+				retr = getchar();
+				if(retr != '\n')
+				{
+					money *= 10;
+					ungetc(retr,stdin);
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		if(forAll == 2)
+		{
+			oldMoney = money;
+			forAll++;
+		}
+		if(forAll >= 2)
+		{
+			money = oldMoney;
+		}
 		if(setupPlayerStruct(*players,money,name,*amntPlayers))
 		{
 			puts("ERROR: error from setupPlayerStruct :: non-zero returned");
