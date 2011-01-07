@@ -282,6 +282,11 @@ void mortgage(struct property **properties,
 			}
 			if((properties[i])->owner == current)
 			{
+				if((properties[i])->hotels > 0)
+				{
+					puts("You need to sell your hotels on the property first.");
+					break;
+				}
 				present = 1;
 				break;
 			}
@@ -433,7 +438,7 @@ void manageHotels(int current,struct player *player,struct property **properties
 		{
 			break;
 		}
-		if((properties[i])->owner != current || (properties[i])->hotels > 0)
+		if((properties[i])->owner != current)
 		{
 			i++;
 			continue;
