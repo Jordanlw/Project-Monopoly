@@ -772,14 +772,6 @@ int setupPlayers(struct player ***players,int *amntPlayers)
 			free(name);
 			break;
 		}
-		/*while(1)
-		{
-			retr = getchar();
-			if(retr == '\n')
-			{
-				break;
-			}
-		}*/
 		printf("Please enter player #%d's name, max 12 characters\n",(*amntPlayers)+1);
 		while(1)
 		{
