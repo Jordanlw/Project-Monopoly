@@ -175,7 +175,7 @@ void addCorners(int linesInPropertyFile,int *cornerPositions,struct property ***
 		((*arrayForProperties)[next])->mortgaged = 0;
 		((*arrayForProperties)[next])->hotels = 0;
 		next++;
-		for(;next < linesInPropertyFile;next++)
+		for(;next < linesInPropertyFile + SIDES;next++)
 		{
 			tmp2 = *((*arrayForProperties)[next]);
 			*((*arrayForProperties)[next]) = tmp1;
@@ -555,7 +555,6 @@ int takeTurn(struct property **properties,struct player **player,int amntPropert
 	int diceOne = rollDice(urandom,1,6);
 	int diceTwo = rollDice(urandom,1,6);
 	int whatReturn = 0;
-	int i = 0;
 	int corn = 0;
 	char retr = 0;
 	char res = 0;
@@ -571,12 +570,9 @@ int takeTurn(struct property **properties,struct player **player,int amntPropert
 	{
 		(player[current])->position -= amntProperties + SIDES;
 	}
-	for(i = 0;i < SIDES;i++)
+	if((properties[(player[current])->position-1])->type == 1)
 	{
-		if(properties[(player[current])->position-1]->type == 1)
-		{
-			corn = 1;
-		}
+		corn = 1;
 	}
 	if(corn == 0 && (properties[(player[current])->position-1])->owner == -1)
 	{
