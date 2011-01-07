@@ -433,14 +433,14 @@ void manageHotels(int current,struct player *player,struct property **properties
 		{
 			break;
 		}
-		if((properties[i])->owner != current)
+		if((properties[i])->owner != current || (properties[i])->hotels > 0)
 		{
 			i++;
 			continue;
 		}
 		present = 1;
 		int price = (float)(properties[i])->value * ((float)((properties[i])->hotels + 1) * 0.1);
-		printf("#%d \"%s\" $%d Hotels:%d\n",i+1,(properties[i])->name,price,(properties[i])->hotels); 
+		printf("#%d \"%s\" $%d\n",i+1,(properties[i])->name,price); 
 		i++;
 	}
 	if(present == 0)
@@ -518,18 +518,44 @@ void manageHotels(int current,struct player *player,struct property **properties
 			puts("Unusable input, please enter \'Buy\' or \'Sell\'");
 		}
 	}
+	puts("How many?");
+	int amnt = 0;
+	while(1)
+	{
+		char retr = getchar();
+		amnt = 0;
+		while(1)
+		{
+			if(retr == '\n')
+			{
+				amnt /= 10;
+				break;
+			}
+			amnt += (retr - '0');
+			amnt *= 10;
+			retr = getchar();
+		}
+		if(amnt > 0)
+		{
+			break;
+		}
+		else
+		{
+			puts("Unusable input, please enter a number.");
+		}
+	}
 	int price = (float)(properties[input])->value * ((float)((properties[input])->hotels + 1) * 0.1);
 	if(opt == 1)
 	{
-		if(price > player->money)
+		if(price * amnt > player->money)
 		{
 			puts("You don't have enough money.");
 			return;
 		}
 		else
 		{
-			player->money -= price;
-			(properties[input])->hotels++;
+			player->money -= (price * amnt);
+			(properties[input])->hotels += amnt;
 			printf("You now have %d hotel(s)\n",(properties[input])->hotels);
 			return;
 		}
@@ -538,8 +564,8 @@ void manageHotels(int current,struct player *player,struct property **properties
 	{
 		int tmp = (float)(properties[input])->value * ((float)((properties[input])->hotels) * 0.1)
 		- (float)(properties[input])->value * ((float)((properties[input])->hotels - 1) * 0.1);
-		player->money += tmp;
-		(properties[input])->hotels--;
+		player->money += (tmp * amnt);
+		(properties[input])->hotels -= amnt;
 		printf("You now have %d hotel(s)\n",(properties[input])->hotels);
 	}	
 	
