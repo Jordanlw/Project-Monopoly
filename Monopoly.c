@@ -367,7 +367,7 @@ void houseStatus(int amntPlayers,
 				 int current)
 {
 	int i = 0;
-	for(i = 0;i < amntProperties;i++)
+	for(i = 0;i < amntProperties + SIDES;i++)
 	{
 		if((properties[i])->owner != current && current != -1)
 		{
