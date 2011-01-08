@@ -156,6 +156,21 @@ int kbhit()
 
 void auctionHouse(int current,struct player **players,struct property **properties,int amntProperties,int amntPlayers)
 {
+	int j = 0;
+	int k = 1;
+	for(;j < amntProperties + SIDES;j++)
+	{
+		if((properties[j])->owner == current)
+		{
+			k = 0;
+			break;
+		}
+	}
+	if(k)
+	{
+		puts("You don't own any properties, can't auction anything.");
+		return;
+	}
 	houseStatus(amntPlayers,amntProperties,players,properties,current);
 	puts("\nWhat property would you like to auction?");
 	char retr = getchar();
@@ -343,7 +358,6 @@ void actOnAction(struct property **properties,
 	{
 		case 1 :
 			playerResign(current,players[current],properties,amntProperties);
-			*doubles = 1;
 			break;
 		case 2:
 			mortgage(properties,players,amntProperties,current);
@@ -489,7 +503,6 @@ void houseStatus(int amntPlayers,
 	{
 		if((properties[i])->owner != current && current != -1)
 		{
-			i++;
 			continue;
 		}
 		printf("#%d %s",i+1,(properties[i])->name);
@@ -521,7 +534,7 @@ void houseStatus(int amntPlayers,
 			int n = 0;
 			for(k = 0;k < amntPlayers;k++)
 			{
-				if(((player[k])->position) -1  == i)
+				if(((player[k])->position) -1  == i && (player[k])->playing == 1)
 				{
 					if(n == 0)
 					{
