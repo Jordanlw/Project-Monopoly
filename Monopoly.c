@@ -21,6 +21,7 @@ struct player
 	int money;
 	unsigned int position;
 	int playing;
+	int property;
 };
 
 int setupTmpPropertyNames(struct property **,int );
@@ -48,6 +49,7 @@ void mortgage(struct property **,struct player **,int ,int);
 void addCorners(int ,int *,struct property ***);
 void trade(int ,struct player **,struct property **,int ,int );
 void parseInput(int ,int *,int *,char *,int *,char *,char *);
+void updateStruct(struct property **,struct player **,int ,int ,int );
 
 int main(void)
 {	
@@ -456,11 +458,24 @@ int gameLoop(struct property **properties,
 				currentPlayer--;
 			}
 		}
+		updateStruct(properties,players,amntProperties,amntPlayers,currentPlayer);
 		i = 0;
 		int action = queryPlayer((players[currentPlayer])->id);
 		actOnAction(properties,players,amntProperties,amntPlayers,corners,action,currentPlayer,urandom,doubles);
 	}
 	return 0;
+}
+
+void updateStruct(struct property **properties,struct player **players,int amntProperties,int amntPlayers,int currentPlayer)
+{
+	int i = 0;
+	for(i = 0;i < amntProperties + SIDES;i++)
+	{
+		if((properties[i])->owner == currentPlayer)
+		{
+			(players[currentPlayer])->property++;
+		}
+	}
 }
 
 void actOnAction(struct property **properties,
