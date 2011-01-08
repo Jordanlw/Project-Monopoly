@@ -265,17 +265,7 @@ int kbhit()
 
 void auctionHouse(int current,struct player **players,struct property **properties,int amntProperties,int amntPlayers)
 {
-	int j = 0;
-	int k = 1;
-	for(;j < amntProperties + SIDES;j++)
-	{
-		if((properties[j])->owner == current)
-		{
-			k = 0;
-			break;
-		}
-	}
-	if(k)
+	if(!(players[current])->property)
 	{
 		puts("You don't own any properties, can't auction anything.");
 		return;
@@ -306,7 +296,6 @@ void auctionHouse(int current,struct player **players,struct property **properti
 	propNum--;
 	puts("What value would you like to start bidding at?");
 	int propPrice = 0;
-	k = 0;
 	parseInput(1,NULL,&propPrice,NULL,NULL,NULL,NULL);
 	int seconds = 10;
 	int currentBid = 0;
