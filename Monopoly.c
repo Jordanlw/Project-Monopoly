@@ -674,21 +674,15 @@ void manageHotels(int current,struct player *player,struct property **properties
 	int i = 0;
 	int present = 0;
 	int input = 0;
-	while(1)
+	for(i = 0;i < amntProperties;i++)
 	{
-		if(i >= amntProperties)
-		{
-			break;
-		}
 		if((properties[i])->owner != current)
 		{
-			i++;
 			continue;
 		}
 		present = 1;
 		int price = (float)(properties[i])->value * ((float)((properties[i])->hotels + 1) * 0.1);
 		printf("#%d \"%s\" $%d\n",i+1,(properties[i])->name,price); 
-		i++;
 	}
 	if(present == 0)
 	{
