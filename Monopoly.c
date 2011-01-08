@@ -183,12 +183,22 @@ void auctionHouse(int current,struct player **players,struct property **properti
 		if(retr == '\n')
 		{
 			propNum /= 10;
-			break;
+			if((properties[propNum-1])->owner != current)
+			{
+				propNum = 0;
+				puts("Please enter a property number you own.");
+			}
+			else
+			{
+				break;
+			}
 		}
 	}
+	propNum--;
 	puts("What value would you like to start bidding at?");
 	retr = getchar();
 	int propPrice = 0;
+	k = 0;
 	while(1)
 	{
 		propPrice += retr - '0';
@@ -200,27 +210,22 @@ void auctionHouse(int current,struct player **players,struct property **properti
 			break;
 		}
 	}
-	int seconds = 0;
+	int seconds = 10;
 	int currentBid = 0;
-	int display = 0;
+	int display = 1;
 	while(1)
 	{
 		int i = 0;
-		int first = 0;
 		if(display)
 		{
 			printf("Current bid $%d\n",propPrice);
-		}
-		display = 0;
-		if(first == 0)
-		{
-			first = 1;
-			while(i < amntPlayers)
+			for(i = 0;i < amntPlayers;i++)
 			{
-				printf("%d %s, ",i+1,(players[i])->id);
+				printf("#%d %s, ",i+1,(players[i])->id);
 			}
 			puts("");
 		}
+		display = 0;
 		if(kbhit())
 		{
 			display = 1;
@@ -238,17 +243,35 @@ void auctionHouse(int current,struct player **players,struct property **properti
 				}
 			}
 			selPla--;
-			if((players[selPla])->money >= propPrice)
+			if(selPla >= 0 && selPla < amntPlayers)
 			{
-				currentBid = selPla;
+				if((players[selPla])->money >= propPrice)
+				{
+					currentBid = selPla;
+					propPrice += propPrice * .15;
+					seconds = 10;
+				}
+				else
+				{
+					puts("You don't have enough funds for the property.");
+				}
 			}
 			else
 			{
-				puts("You don't have enough funds for the property.");
+				puts("Please enter an ID, of one of the listed players.");
 			}
+
 		}
-		usleep(100*1000);
-		seconds++;	
+		sleep(1);
+		seconds--;
+		printf("You have %d seconds left.\n",seconds);
+		if(seconds <= 0)
+		{
+			printf("The winner is %s at $%d\n",(players[currentBid])->id,propPrice);
+			(properties[propNum])->owner = currentBid;
+			(players[currentBid])->money -= propPrice;
+			break;
+		}
 	}
 }
 void addCorners(int linesInPropertyFile,int *cornerPositions,struct property ***arrayForProperties)
