@@ -46,6 +46,8 @@ void status(struct property **,struct player **,int ,int ,int );
 void houseStatus(int,int ,struct player **,struct property **,int);
 void mortgage(struct property **,struct player **,int ,int);
 void addCorners(int ,int *,struct property ***);
+void trade(int ,struct player **,struct property **,int ,int );
+void parseInput(int ,int *,int *,char *,int *,char *,char *);
 
 int main(void)
 {	
@@ -140,6 +142,104 @@ int main(void)
 	fclose(urandom);
 	fclose(propertyFile);
 	return 0;
+}
+
+void trade(int current,struct player **players,struct property **properties,int amntProperties,int amntPlayers)
+{
+	puts("Do you want to give a [p]roperty or [m]oney?");
+	int result = 0;
+	char desired[2] = {'p','m'};
+	parseInput(2,&result,NULL,desired,NULL,"property","money");
+	
+	//DEBUG
+	printf("%d\n",result);
+}
+
+void parseInput(int intOrAns,int *result,int *num,char *desired,int *range,char *positive,char *negative)
+{
+	//intOrAns :: 1 for int, 2 for Answer
+	//Answer stored in *result, 1 for yes, 0 for no
+	//Parsed int stored in *num
+	//*range stores, as the first element the lowest accepted value and as the second, the highest value accepted.
+	//Desired informs us on what the caller wants recongised as positive response and negative,
+	//the first element is the positive, the second is the negative
+	//*positive/*negative store the string that will replace positive and negative when outputed.
+	char retr = 0;
+	if(intOrAns == 1)
+	{
+		retr = getchar();
+		while(1)
+		{
+			*num += retr - '0';
+			*num *= 10;
+			retr = getchar();
+			if(retr == '\n')
+			{
+				*num /= 10;
+				if(*num >= range[0] && *num <= range[1])
+				{
+					break;
+				}
+				else
+				{
+					*num = 0;
+					printf("Please enter a value above or equal to %d and below or equal to %d.\n",range[0],range[1]);
+				}
+			}
+		}
+	}
+	else if(intOrAns == 2)
+	{
+		while(1)
+		{
+			retr = getchar();
+			while(1)
+			{
+				if(retr == '\n')
+				{
+					break;
+				}
+				char tmp = getchar();
+				if(tmp == '\n')
+				{
+					break;
+				}
+			}
+			if(retr == '\n')
+			{
+				if(positive != NULL && negative != NULL)
+				{		
+					printf("Please enter %c for %s and %c for %s.\n",desired[0],positive,desired[1],negative);
+				}
+				else
+				{
+					printf("Please enter %c for positive and %c for negative.\n",desired[0],desired[1]);
+				}
+				continue;
+			}
+			if(retr == desired[0] || retr == (desired[0] + 'A' - 'a'))
+			{
+				*result = 1;
+				break;
+			}
+			else if(retr == desired[1] || retr == (desired[1] + 'A' - 'a'))
+			{
+				*result = 0;
+				break;
+			}
+			else
+			{
+				if(positive != NULL && negative != NULL)
+				{		
+					printf("Please enter %c for %s and %c for %s.\n",desired[0],positive,desired[1],negative);
+				}
+				else
+				{
+					printf("Please enter %c for positive and %c for negative.\n",desired[0],desired[1]);
+				}
+			}
+		}
+	}
 }
 
 int kbhit()
@@ -388,6 +488,10 @@ void actOnAction(struct property **properties,
 			break;
 		case 3 :
 			manageHotels(current,players[current],properties,amntProperties);
+			*doubles = 1;
+			break;
+		case 4:
+			trade(current,players,properties,amntProperties,amntPlayers);
 			*doubles = 1;
 			break;
 		case 5 :
