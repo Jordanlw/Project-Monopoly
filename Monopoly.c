@@ -316,19 +316,8 @@ void auctionHouse(int current,struct player **players,struct property **properti
 		if(kbhit())
 		{
 			display = 1;
-			retr = getchar();
 			int selPla = 0;
-			while(1)
-			{
-				selPla += retr - '0';
-				selPla *= 10;
-				retr = getchar();
-				if(retr == '\n')
-				{
-					selPla /= 10;
-					break;
-				}
-			}
+			parseInput(1,NULL,&selPla,NULL,NULL,NULL,NULL);
 			selPla--;
 			if(selPla >= 0 && selPla < amntPlayers)
 			{
