@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define SIDES 4
 
@@ -141,6 +142,100 @@ int main(void)
 	return 0;
 }
 
+int kbhit()
+{
+	struct timeval tv;
+	fd_set fds;
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+	FD_ZERO(&fds);
+	FD_SET(0,&fds);
+	select(0+1,&fds,NULL,NULL,&tv);
+	return FD_ISSET(0,&fds);
+}
+
+void auctionHouse(int current,struct player **players,struct property **properties,int amntProperties,int amntPlayers)
+{
+	houseStatus(amntPlayers,amntProperties,players,properties,current);
+	puts("\nWhat property would you like to auction?");
+	char retr = getchar();
+	int propNum = 0;
+	while(1)
+	{
+		propNum += retr - '0';
+		propNum *= 10;
+		retr = getchar();
+		if(retr == '\n')
+		{
+			propNum /= 10;
+			break;
+		}
+	}
+	puts("What value would you like to start bidding at?");
+	retr = getchar();
+	int propPrice = 0;
+	while(1)
+	{
+		propPrice += retr - '0';
+		propPrice *= 10;
+		retr = getchar();
+		if(retr == '\n')
+		{
+			propPrice /= 10;
+			break;
+		}
+	}
+	int seconds = 0;
+	int currentBid = 0;
+	int display = 0;
+	while(1)
+	{
+		int i = 0;
+		int first = 0;
+		if(display)
+		{
+			printf("Current bid $%d\n",propPrice);
+		}
+		display = 0;
+		if(first == 0)
+		{
+			first = 1;
+			while(i < amntPlayers)
+			{
+				printf("%d %s, ",i+1,(players[i])->id);
+			}
+			puts("");
+		}
+		if(kbhit())
+		{
+			display = 1;
+			retr = getchar();
+			int selPla = 0;
+			while(1)
+			{
+				selPla += retr - '0';
+				selPla *= 10;
+				retr = getchar();
+				if(retr == '\n')
+				{
+					selPla /= 10;
+					break;
+				}
+			}
+			selPla--;
+			if((players[selPla])->money >= propPrice)
+			{
+				currentBid = selPla;
+			}
+			else
+			{
+				puts("You don't have enough funds for the property.");
+			}
+		}
+		usleep(100*1000);
+		seconds++;	
+	}
+}
 void addCorners(int linesInPropertyFile,int *cornerPositions,struct property ***arrayForProperties)
 { 
 	//Create alternative array and fill with data
@@ -256,6 +351,10 @@ void actOnAction(struct property **properties,
 			break;
 		case 3 :
 			manageHotels(current,players[current],properties,amntProperties);
+			*doubles = 1;
+			break;
+		case 5 :
+			auctionHouse(current,players,properties,amntProperties,amntPlayers);
 			*doubles = 1;
 			break;
 		case 6 :
