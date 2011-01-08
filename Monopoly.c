@@ -672,7 +672,6 @@ void houseStatus(int amntPlayers,
 void manageHotels(int current,struct player *player,struct property **properties,int amntProperties)
 {
 	int i = 0;
-	int present = 0;
 	int input = 0;
 	for(i = 0;i < amntProperties;i++)
 	{
@@ -680,11 +679,10 @@ void manageHotels(int current,struct player *player,struct property **properties
 		{
 			continue;
 		}
-		present = 1;
 		int price = (float)(properties[i])->value * ((float)((properties[i])->hotels + 1) * 0.1);
 		printf("#%d \"%s\" $%d\n",i+1,(properties[i])->name,price); 
 	}
-	if(present == 0)
+	if(!player->property)
 	{
 		puts("No properties to manage.");
 		return;
