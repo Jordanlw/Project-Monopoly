@@ -248,18 +248,22 @@ void actOnAction(struct property **properties,
 	{
 		case 1 :
 			playerResign(current,players[current],properties,amntProperties);
+			*doubles = 1;
 			break;
 		case 2:
 			mortgage(properties,players,amntProperties,current);
+			*doubles = 1;
 			break;
 		case 3 :
 			manageHotels(current,players[current],properties,amntProperties);
+			*doubles = 1;
 			break;
 		case 6 :
 			*doubles = takeTurn(properties,players,amntProperties,urandom,corners,current);
 			break;
 		case 7 :
 			status(properties,players,amntProperties,amntPlayers,current);
+			*doubles = 1;
 			break;
 	}
 }
