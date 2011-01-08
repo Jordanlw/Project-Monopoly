@@ -176,14 +176,21 @@ void parseInput(int intOrAns,int *result,int *num,char *desired,int *range,char 
 			if(retr == '\n')
 			{
 				*num /= 10;
-				if(*num >= range[0] && *num <= range[1])
+				if(range)
 				{
-					break;
+					if(*num >= range[0] && *num <= range[1])
+					{
+						break;
+					}
+					else
+					{
+						*num = 0;
+						printf("Please enter a value above or equal to %d and below or equal to %d.\n",range[0],range[1]);
+					}
 				}
 				else
 				{
-					*num = 0;
-					printf("Please enter a value above or equal to %d and below or equal to %d.\n",range[0],range[1]);
+					break;
 				}
 			}
 		}
@@ -296,20 +303,9 @@ void auctionHouse(int current,struct player **players,struct property **properti
 	}
 	propNum--;
 	puts("What value would you like to start bidding at?");
-	retr = getchar();
 	int propPrice = 0;
 	k = 0;
-	while(1)
-	{
-		propPrice += retr - '0';
-		propPrice *= 10;
-		retr = getchar();
-		if(retr == '\n')
-		{
-			propPrice /= 10;
-			break;
-		}
-	}
+	parseInput(1,NULL,&propPrice,NULL,NULL,NULL,NULL);
 	int seconds = 10;
 	int currentBid = 0;
 	int display = 1;
