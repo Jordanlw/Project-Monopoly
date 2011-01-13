@@ -167,6 +167,14 @@ void parseInput(int intOrAns,int *result,int *num,char *desired,int *range,char 
 	//the first element is the positive, the second is the negative
 	//*positive/*negative store the string that will replace positive and negative when outputed.
 	char retr = 0;
+	if(result)
+	{
+		*result = 0;
+	}
+	if(num)
+	{
+		*num = 0;
+	}
 	if(intOrAns == 1)
 	{
 		while(1)
@@ -192,8 +200,11 @@ void parseInput(int intOrAns,int *result,int *num,char *desired,int *range,char 
 					break;
 				}
 			}
-			*num += retr - '0';
-			*num *= 10;
+			if(retr != '\n')
+			{
+				*num += retr - '0';
+				*num *= 10;
+			}
 		}
 	}
 	else if(intOrAns == 2)
@@ -271,25 +282,18 @@ void auctionHouse(int current,struct player **players,struct property **properti
 	}
 	houseStatus(amntPlayers,amntProperties,players,properties,current);
 	puts("\nWhat property would you like to auction?");
-	char retr = getchar();
 	int propNum = 0;
+	int range[2] = {1,amntProperties};
 	while(1)
 	{
-		propNum += retr - '0';
-		propNum *= 10;
-		retr = getchar();
-		if(retr == '\n')
+		parseInput(1,NULL,&propNum,NULL,range,NULL,NULL);
+		if((properties[propNum-1])->owner == current)
 		{
-			propNum /= 10;
-			if((properties[propNum-1])->owner != current)
-			{
-				propNum = 0;
-				puts("Please enter a property number you own.");
-			}
-			else
-			{
-				break;
-			}
+			break;
+		}
+		else
+		{
+			puts("You don't own that property.");
 		}
 	}
 	propNum--;
