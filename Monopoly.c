@@ -505,89 +505,41 @@ void mortgage(struct property **properties,
 			  int amntProperties,
 			  int current)
 {
-	int i = 0;
-	int once = 0;
-	int present = 0;
-	char retr = 0;
+	if((player[current])->property <= 0)
+	{
+		puts("You don't own any properties.");
+		return;
+	}
+	houseStatus(0,amntProperties,player,properties,current);
+	puts("Mortgaged rate is 10\% of property value.");
+	int select = 0;
 	while(1)
 	{
-		while(1)
+		//Select property
+		select = 0;
+		int range[2] = {1,amntProperties};
+		parseInput(1,NULL,&select,NULL,range,NULL,NULL);
+		if((properties[select-1])->owner == current)
 		{
-			if(i >= amntProperties)
-			{
-				break;
-			}
-			if((properties[i])->owner == current)
-			{
-				if((properties[i])->hotels > 0)
-				{
-					if(once)
-					{
-						break;
-					}
-					once = 1;
-					puts("You need to sell your hotels on the property first.");
-					break;
-				}
-				present = 1;
-				break;
-			}
-			i++;
-		}
-		if(present == 0)
-		{
-			if(once)
-			{
-				return;
-			}
-			puts("You don't own any houses, Can not mortage yet.");
-			return;
-		}	
-		houseStatus(0,amntProperties,player,properties,current);
-		i = 0;
-		puts("Please select a property, mortgage rate 10\% of value.");
-		while(1)
-		{
-			retr = getchar();
-			if(retr == '\n')
-			{
-				i /= 10;
-				break;
-			}
-			i += retr - '0';
-			i *= 10;
-		}
-		if(i < 1 || i > amntProperties)
-		{
-			puts("Please enter a number corresponding to the property.");
-		}
-		break;
-	}
-	i--;
-	if((properties[i])->hotels > 0)
-	{
-		puts("You need to sell all hotels on this property before mortgaging.");
-	}
-	else
-	{
-		if((properties[i])->owner != current)
-		{
-			puts("You don't own that property.");
-			return;
-		}
-		if((properties[i])->mortgaged == 1)
-		{
-			(player[current])->money += (properties[i])->value / 10;
-			(properties[i])->mortgaged = 0;
-			puts("You have unmortgaged this property.");
+			break;
 		}
 		else
 		{
-			(player[current])->money -= (properties[i])->value / 10;
-			(properties[i])->mortgaged = 1;
-			puts("You have mortgaged this property.");
+			puts("You don't own that property.");
 		}
 	}
+	select--;
+	if((properties[select])->mortgaged == 0)
+	{
+		(properties[select])->mortgaged = 1;
+		(player[current])->money -= (properties[select])->value * 0.1;
+	}
+	else if((properties[select])->mortgaged == 1)
+	{
+		(properties[select])->mortgaged = 0;
+		(player[current])->money += (properties[select])->value * 0.1;
+	}
+	
 }
 
 void status(struct property **properties,
