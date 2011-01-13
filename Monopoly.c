@@ -169,11 +169,8 @@ void parseInput(int intOrAns,int *result,int *num,char *desired,int *range,char 
 	char retr = 0;
 	if(intOrAns == 1)
 	{
-		retr = getchar();
 		while(1)
 		{
-			*num += retr - '0';
-			*num *= 10;
 			retr = getchar();
 			if(retr == '\n')
 			{
@@ -195,6 +192,8 @@ void parseInput(int intOrAns,int *result,int *num,char *desired,int *range,char 
 					break;
 				}
 			}
+			*num += retr - '0';
+			*num *= 10;
 		}
 	}
 	else if(intOrAns == 2)
@@ -688,39 +687,19 @@ void manageHotels(int current,struct player *player,struct property **properties
 		return;
 	}
 	puts("\nPlease enter the ID number for the property you want to modify.");
+	int range[2] = {1,amntProperties + SIDES};
 	while(1)
 	{
-		char retr = getchar();
-		int error = 0;
-		input = 0;
-		while(1)
+		parseInput(1,NULL,&input,NULL,range,NULL,NULL);
+		input--;
+		if((properties[input])->owner != current)
 		{
-			if(retr == '\n')
-			{
-				input /= 10;
-				input--;
-				break;
-			}
-			input += (retr - '0');
-			input *= 10;
-			retr = getchar();
-		}
-		if(input > 0 && input <= i)
-		{
-			if((properties[input])->owner == current)
-			{
-				break;
-			}
-			error = 1;
+			puts("You don't own that property.");
+			continue;
 		}
 		else
 		{
-			puts("Unusable input, please enter the ID number of a property.");
-		}
-		if(error)
-		{
-			error = 0;
-			puts("Unusable input, please enter the ID number of a property.");
+			break;
 		}
 	}
 	puts("Would you like to Sell or Buy hotels?");
