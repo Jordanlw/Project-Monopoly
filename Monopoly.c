@@ -44,12 +44,13 @@ void playerResign(int ,struct player *,struct property **,int );
 int takeTurn(struct property **,struct player **,int,FILE *,int *,int);
 void manageHotels(int ,struct player *,struct property **,int );
 void status(struct property **,struct player **,int ,int ,int );
-void houseStatus(int,int ,struct player **,struct property **,int);
+void houseStatus(int,int ,struct player **,struct property **,int,void (*)(int *));
 void mortgage(struct property **,struct player **,int ,int);
 void addCorners(int ,int *,struct property ***);
 void trade(int ,struct player **,struct property **,int ,int );
 void parseInput(int ,int *,int *,char *,int *,char *,char *);
 void updateStruct(struct property **,struct player **,int ,int ,int );
+void mortgagePrice(int *);
 
 int main(void)
 {	
@@ -280,7 +281,7 @@ void auctionHouse(int current,struct player **players,struct property **properti
 		puts("You don't own any properties, can't auction anything.");
 		return;
 	}
-	houseStatus(amntPlayers,amntProperties,players,properties,current);
+	houseStatus(amntPlayers,amntProperties,players,properties,current,NULL);
 	puts("\nWhat property would you like to auction?");
 	int propNum = 0;
 	int range[2] = {1,amntProperties};
@@ -510,8 +511,7 @@ void mortgage(struct property **properties,
 		puts("You don't own any properties.");
 		return;
 	}
-	houseStatus(0,amntProperties,player,properties,current);
-	puts("Mortgaged rate is 10\% of property value.");
+	houseStatus(0,amntProperties,player,properties,current,&mortgagePrice);
 	int select = 0;
 	while(1)
 	{
@@ -560,18 +560,25 @@ void status(struct property **properties,
 		printf("%s\'s money: $%d\n",(player[i])->id,(player[i])->money);
 		i++;
 	}
-	houseStatus(amntPlayers,amntProperties,player,properties,-1);
+	houseStatus(amntPlayers,amntProperties,player,properties,-1,NULL);
+}
+
+void mortgagePrice(int *price)
+{
+	*price *= 0.1;
 }
 
 void houseStatus(int amntPlayers,
 				 int amntProperties,
 				 struct player **player,
 				 struct property **properties,
-				 int current)
+				 int current,
+				 void (*changePrice)(int *))
 {
 	int i = 0;
 	for(i = 0;i < amntProperties + SIDES;i++)
 	{
+		int price = 0;
 		if((properties[i])->owner != current && current != -1)
 		{
 			continue;
@@ -596,7 +603,16 @@ void houseStatus(int amntPlayers,
 		printf(" Hotels: %d",(properties[i])->hotels);
 		if((properties[i])->type != 1)
 		{
-			printf(" Price: $%d",(properties[i])->value);
+			if(changePrice)
+			{
+				price = (properties[i])->value;
+				(*changePrice)(&price);
+				printf(" Price: $%d",price);
+			}
+			else
+			{
+				printf(" Price: $%d",(properties[i])->value);
+			}
 		}
 		if(current == -1)
 		{
