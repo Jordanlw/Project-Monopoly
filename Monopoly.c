@@ -1033,6 +1033,7 @@ int takeTurn(struct property **properties,struct player **player,int amntPropert
 		{
 			printf("\"%s\", you currently only have $%d in funds,\nyou cannot purchase this property\n",
 			(player[current])->id,(player[current])->money);
+			whatReturn = 1;
 		}
 		
 	}
