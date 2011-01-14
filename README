@@ -2,3 +2,8 @@ Project goal is to develope a monopoly board game. Hopefully learning
 many different things during. With no limit to what the game can 
 contain, gameplay wise.
 jordanw2@gmail.com
+
+Completed first stage of program, features:
+Resign,mortgages,hotels,trade,auction,rolling dice,status.
+
+Next stage will be graphical frontend, along with other cleanups.
