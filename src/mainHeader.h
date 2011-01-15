@@ -36,8 +36,12 @@ void updateStruct(struct property **,struct player **,int ,int ,int );
 void mortgagePrice(int *);
 void bankruptcy(struct property **,struct player **,int ,int ,int ,int *,int *);
 int needMore(void **,int *);
-
+int kbhit(void);
+void auctionHouse(int ,struct player **,struct property **,int ,int );
 
 #include "propertyStruct.c"
 #include "playerStruct.c"
 #include "multiUseStruct.c"
+#include "gameLoop.c"
+#include "trade.c"
+#include "auction.c"
