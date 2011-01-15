@@ -7,3 +7,7 @@ Completed first stage of program, features:
 Resign,mortgages,hotels,trade,auction,rolling dice,status.
 
 Next stage will be graphical frontend, along with other cleanups.
+
+TODO:
+Add 'go back' feature to all selections, allowing user that pressed the 
+wrong button to go backwards.
