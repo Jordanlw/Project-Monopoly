@@ -3,10 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 
-#define SIDES 4
-
 #include "structs.h"
-#include "propertyStruct.c"
+
+#define SIDES 4
 
 int setupTmpPropertyNames(struct property **,int );
 int rollDice(FILE *,int,int);
@@ -36,3 +35,7 @@ void parseInput(int ,int *,int *,char *,int *,char *,char *);
 void updateStruct(struct property **,struct player **,int ,int ,int );
 void mortgagePrice(int *);
 void bankruptcy(struct property **,struct player **,int ,int ,int ,int *,int *);
+int needMore(void **,int *);
+
+
+#include "propertyStruct.c"
