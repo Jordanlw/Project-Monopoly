@@ -45,3 +45,8 @@ void auctionHouse(int ,struct player **,struct property **,int ,int );
 #include "gameLoop.c"
 #include "trade.c"
 #include "auction.c"
+#include "mortgage.c"
+#include "resign.c"
+#include "hotels.c"
+#include "status.c"
+#include "bankruptcy.c"
