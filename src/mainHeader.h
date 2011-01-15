@@ -39,3 +39,5 @@ int needMore(void **,int *);
 
 
 #include "propertyStruct.c"
+#include "playerStruct.c"
+#include "multiUseStruct.c"
