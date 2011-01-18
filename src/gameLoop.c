@@ -1,4 +1,3 @@
-
 int gameLoop(struct property **properties,
 		     struct player **players,
 		 	 int amntProperties,
@@ -45,6 +44,7 @@ int gameLoop(struct property **properties,
 		}
 		updateStruct(properties,players,amntProperties,amntPlayers,currentPlayer);
 		i = 0;
+		graphicalLoop(properties,players,amntProperties);
 		int action = queryPlayer((players[currentPlayer])->id);
 		actOnAction(properties,players,amntProperties,amntPlayers,corners,action,currentPlayer,urandom,doubles);
 		bankruptcy(properties,players,amntProperties,amntPlayers,currentPlayer,doubles,&previous);

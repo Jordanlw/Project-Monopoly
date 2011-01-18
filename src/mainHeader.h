@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 
 #include "structs.h"
 
@@ -50,3 +52,4 @@ void auctionHouse(int ,struct player **,struct property **,int ,int );
 #include "hotels.c"
 #include "status.c"
 #include "bankruptcy.c"
+#include "graphics.c"
