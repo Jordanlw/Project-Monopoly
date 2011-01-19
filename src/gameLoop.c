@@ -8,7 +8,6 @@ int gameLoop(struct property **properties,
 	int currentPlayer = 0;
 	int i = 0;
 	int doubles[1] = {0};
-	int quit = 0;
 	
 	if(amntPlayers == 0)
 	{
@@ -45,16 +44,9 @@ int gameLoop(struct property **properties,
 		}
 		updateStruct(properties,players,amntProperties,amntPlayers,currentPlayer);
 		i = 0;
-		graphicalLoop(properties,players,amntProperties,&quit);
 		int action = queryPlayer((players[currentPlayer])->id);
 		actOnAction(properties,players,amntProperties,amntPlayers,corners,action,currentPlayer,urandom,doubles);
 		bankruptcy(properties,players,amntProperties,amntPlayers,currentPlayer,doubles,&previous);
-		if(quit)
-		{
-			TTF_Quit();
-			SDL_Quit();
-			return 0;
-		}
 	}
 	return 0;
 }

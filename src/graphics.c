@@ -1,87 +1,43 @@
-void graphicalLoop(struct property **properties,
+static int graphicalInit(SDL_Surface **screen)
+{
+	if(SDL_Init(SDL_INIT_EVERYTHING) ||	TTF_Init())
+	{
+		return 1;
+	}
+	*screen = SDL_SetVideoMode(1000,1000,32,SDL_SWSURFACE);
+	if(!screen)
+	{
+		return 1;
+	}
+	return 0;
+}
+int graphicalMain(struct property **properties,
 				   struct player **players,
-				   int amntProperties,
-				   int *quit)
+				   int amntProperties)
 {
-	static int i = 0;
-	SDL_Surface *gameBoard = SDL_CreateRGBSurface(0,1000,800,32,0,0,0,0);
 	SDL_Surface *screen;
-	SDL_Event event;
-	SDL_PollEvent(&event);
-	if(event.type == SDL_QUIT)
+	if(graphicalInit(&screen))
 	{
-		*quit = 1;
+		return 1;
 	}
-	if(!i)
-	{
-		SDL_Init(SDL_INIT_EVERYTHING);
-		TTF_Init();
-		screen = SDL_SetVideoMode(1000,800, 32, SDL_SWSURFACE);
-		i = 1;
-	}
-	updateBoard(gameBoard,players,properties,amntProperties);
-	SDL_BlitSurface(gameBoard,NULL,screen,NULL);
-	SDL_Flip(screen);
-}
+	TTF_Font *font = TTF_OpenFont("/usr/share/fonts/TTF/mensch.ttf",12);
+	SDL_Color fontColor = {255,255,255};
+	SDL_Rect requirement;
+	getReq(&requirement,font,fontColor);
 
-static void updateBoard(SDL_Surface *gameBoard,
-			struct player **players,
-			struct property **properties,
-			int amntProperties)
-{
-	int i = 0;
-	for(i = 0;i < amntProperties;i++)
-	{
-		TTF_Font *font = NULL;
-		SDL_Color textcolor = {0,0,0};
-		font = TTF_OpenFont( "/usr/share/fonts/TTF/mensch.ttf", 12 );
-		if(!font)
-		{
-			exit(1);
-		}
-		SDL_Surface *property = SDL_CreateRGBSurface(0,100,300,32,0,0,0,0);
-		SDL_Surface *textSur = NULL;
-		SDL_Surface *oldTextSur = NULL;
-		SDL_Rect textRect;
-		//Blits the property's name
-		textSur = TTF_RenderText_Solid(font,(properties[i])->name,textcolor);
-		SDL_Rect textPos,oldTextPos;
-		textPos.x = textSur->w / 2;
-		textPos.y = 0;
-		SDL_BlitSurface(textSur,NULL,property,&textPos);
-		
-		//Blits the owner's name
-		equalSdlRects(&textPos,&oldTextPos);
-		textPos.y = textSur->h + oldTextPos.y;
-		SDL_FreeSurface(textSur);
-		if((properties[i])->owner == -1)
-		{
-			textSur = TTF_RenderText_Solid(font,"Unowned",textcolor);
-		}
-		else
-		{
-			textSur = TTF_RenderText_Solid(font,(players[(properties[i])->owner])->id,textcolor);
-		}
-		textPos.x = textSur->w / 2;
-		SDL_BlitSurface(textSur,NULL,property,&textPos);
-		
-		//TODO: blit amount of hotles & price
-		
-		//Blit property onto gameboard
-		SDL_BlitSurface(property,NULL,gameBoard,NULL);
-		if(i+1 >= amntProperties)
-		{
-			TTF_CloseFont(font);
-			SDL_FreeSurface(property);
-			SDL_FreeSurface(textSur);
-		}
-	}
 	
+	//Create game board.
+	SDL_Surface *board;
 }
-static void equalSdlRects(SDL_Rect *from,SDL_Rect *to)
+static void getReq(*requirement,font,fontColor)
 {
-	(*to).x = (*from).x;
-	(*to).y = (*from).y;
-	(*to).w = (*from).w;
-	(*to).h = (*from).h;
+	//Find needed dimensions of each property surface.
+	SDL_Surface *test = TTF_RenderText_Solid(font,"test 123 test 123",fontColor);
+	//4 - Amount of surfaces applied, 4 * 5 - padding of 5, between surfaces.
+	requirement->h = SDL_Surface->h * 4 + 4 * 5;
+	// + 6 - padding on the sides.
+	requirement->w = SDL_Surface->w + 6;
+	SDL_FreeSurface(test);
 }
+	
+	

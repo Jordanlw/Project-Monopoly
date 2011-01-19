@@ -91,8 +91,6 @@ int main(void)
 		free(arrayForPlayers[i]);
 	}
 	free(arrayForPlayers);
-	TTF_Quit();
-	SDL_Quit();
 	//Close FILE stream for /dev/urandom
 	fclose(urandom);
 	fclose(propertyFile);
