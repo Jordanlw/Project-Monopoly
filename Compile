@@ -1,1 +1,1 @@
-gcc -g -o Monopoly -Wall src/main.c `pkg-config --cflags --libs gtk+-2.0`
+gcc -g -o Monopoly -Wall src/main.c -lSDL -lSDL_ttf

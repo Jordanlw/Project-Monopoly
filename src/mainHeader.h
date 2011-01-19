@@ -40,6 +40,9 @@ void bankruptcy(struct property **,struct player **,int ,int ,int ,int *,int *);
 int needMore(void **,int *);
 int kbhit(void);
 void auctionHouse(int ,struct player **,struct property **,int ,int );
+void graphicalLoop(struct property **,struct player **,int ,int *);
+static void updateBoard(SDL_Surface *,struct player **,struct property **,	int );
+static void equalSdlRects(SDL_Rect *,SDL_Rect *);
 
 #include "propertyStruct.c"
 #include "playerStruct.c"
