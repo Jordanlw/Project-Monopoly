@@ -2,7 +2,8 @@ int gameLoop(struct property **properties,
 		     struct player **players,
 		 	 int amntProperties,
 		 	 int amntPlayers,
-			 int *corners)
+			 int *corners,
+			 volatile int *isRunning)
 {
 	int currentPlayer = 0;
 	int i = 0;
@@ -16,6 +17,10 @@ int gameLoop(struct property **properties,
 	int previous = -1;
 	for(currentPlayer = 0;;currentPlayer++)
 	{
+		if(*isRunning == 0)
+		{
+			return 0;
+		}
 		if(currentPlayer >= amntPlayers)
 		{
 			currentPlayer = 0;

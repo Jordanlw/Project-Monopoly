@@ -48,7 +48,7 @@ int main(void)
 	addCorners(linesInPropertyFile,cornerPositions,&arrayForProperties);
 	//Set up GrahicalLoop thread.
 	pthread_t glThread;
-	volatile int isRunning = 0;
+	volatile int isRunning = 1;
 	void* data[4];
 	data[0] = (void*)arrayForProperties;
 	data[1] = (void*)arrayForPlayers;
@@ -56,7 +56,7 @@ int main(void)
 	data[3] = (void*)&isRunning;
 	pthread_create(&glThread,NULL,graphicalMain,(void *)data);
 	
-	if(gameLoop(arrayForProperties,arrayForPlayers,linesInPropertyFile,amntPlayers,cornerPositions))
+	if(gameLoop(arrayForProperties,arrayForPlayers,linesInPropertyFile,amntPlayers,cornerPositions,&isRunning))
 	{
 		puts("ERROR: error from gameLoop() :: non-zero returned");
 	}

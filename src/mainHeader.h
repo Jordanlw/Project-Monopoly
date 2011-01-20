@@ -5,7 +5,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 #include <pthread.h>
-
+#include <SDL_rotozoom.h>
 #include "structs.h"
 
 #define SIDES 4
@@ -23,7 +23,7 @@ int allocPlayerArray(struct player ***,int );
 int setupPlayers(struct player ***,int *);
 int setupPlayerStruct(struct player **,unsigned int ,char *,int );
 void setFourCorners(int ,int *);
-int gameLoop(struct property **,struct player **,int ,int ,int *);
+int gameLoop(struct property **,struct player **,int ,int ,int *,volatile int *);
 char queryPlayer(char *);
 void actOnAction(struct property **,struct player **,int ,int ,int *,int,int,int *);
 void playerResign(int ,struct player *,struct property **,int );
@@ -45,6 +45,7 @@ void *graphicalMain(void *);
 static int graphicalInit(SDL_Surface **);
 static void setBoardSize(struct property **,int ,SDL_Surface **,SDL_Rect );
 static void getReq(SDL_Rect *,TTF_Font *,SDL_Color );
+static void refreshBoard(SDL_Surface *);
 
 #include "propertyStruct.c"
 #include "playerStruct.c"
