@@ -4,13 +4,14 @@
 #include <unistd.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+#include <pthread.h>
 
 #include "structs.h"
 
 #define SIDES 4
 
 int setupTmpPropertyNames(struct property **,int );
-int rollDice(FILE *,int,int);
+int rollDice(int,int);
 int amountOfLines(FILE *,int *);
 int createArrayOfPtrs(int ,void ***);
 int makeArryOfPropertyPtrs(int ,struct property **);
@@ -22,11 +23,11 @@ int allocPlayerArray(struct player ***,int );
 int setupPlayers(struct player ***,int *);
 int setupPlayerStruct(struct player **,unsigned int ,char *,int );
 void setFourCorners(int ,int *);
-int gameLoop(struct property **,struct player **,int ,int ,int *,FILE *);
+int gameLoop(struct property **,struct player **,int ,int ,int *);
 char queryPlayer(char *);
-void actOnAction(struct property **,struct player **,int ,int ,int *,int,int,FILE *,int *);
+void actOnAction(struct property **,struct player **,int ,int ,int *,int,int,int *);
 void playerResign(int ,struct player *,struct property **,int );
-int takeTurn(struct property **,struct player **,int,FILE *,int *,int);
+int takeTurn(struct property **,struct player **,int,int *,int);
 void manageHotels(int ,struct player *,struct property **,int );
 void status(struct property **,struct player **,int ,int ,int );
 void houseStatus(int,int ,struct player **,struct property **,int,void (*)(int *));
@@ -40,6 +41,10 @@ void bankruptcy(struct property **,struct player **,int ,int ,int ,int *,int *);
 int needMore(void **,int *);
 int kbhit(void);
 void auctionHouse(int ,struct player **,struct property **,int ,int );
+void *graphicalMain(void *);
+static int graphicalInit(SDL_Surface **);
+static void setBoardSize(struct property **,int ,SDL_Surface **,SDL_Rect );
+static void getReq(SDL_Rect *,TTF_Font *,SDL_Color );
 
 #include "propertyStruct.c"
 #include "playerStruct.c"

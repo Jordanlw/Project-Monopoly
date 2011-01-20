@@ -2,8 +2,7 @@ int gameLoop(struct property **properties,
 		     struct player **players,
 		 	 int amntProperties,
 		 	 int amntPlayers,
-			 int *corners,
-			 FILE *urandom)
+			 int *corners)
 {
 	int currentPlayer = 0;
 	int i = 0;
@@ -45,7 +44,7 @@ int gameLoop(struct property **properties,
 		updateStruct(properties,players,amntProperties,amntPlayers,currentPlayer);
 		i = 0;
 		int action = queryPlayer((players[currentPlayer])->id);
-		actOnAction(properties,players,amntProperties,amntPlayers,corners,action,currentPlayer,urandom,doubles);
+		actOnAction(properties,players,amntProperties,amntPlayers,corners,action,currentPlayer,doubles);
 		bankruptcy(properties,players,amntProperties,amntPlayers,currentPlayer,doubles,&previous);
 	}
 	return 0;
@@ -70,7 +69,6 @@ void actOnAction(struct property **properties,
 				 int *corners,
 				 int action,
 				 int current,
-				 FILE *urandom,
 				 int *doubles)
 {
 	switch (action)
@@ -95,7 +93,7 @@ void actOnAction(struct property **properties,
 			*doubles = 1;
 			break;
 		case 6 :
-			*doubles = takeTurn(properties,players,amntProperties,urandom,corners,current);
+			*doubles = takeTurn(properties,players,amntProperties,corners,current);
 			break;
 		case 7 :
 			status(properties,players,amntProperties,amntPlayers,current);
@@ -104,10 +102,10 @@ void actOnAction(struct property **properties,
 	}
 }
 			
-int takeTurn(struct property **properties,struct player **player,int amntProperties,FILE *urandom,int *corners,int current)
+int takeTurn(struct property **properties,struct player **player,int amntProperties,int *corners,int current)
 {
-	int diceOne = rollDice(urandom,1,6);
-	int diceTwo = rollDice(urandom,1,6);
+	int diceOne = rollDice(1,6);
+	int diceTwo = rollDice(1,6);
 	int whatReturn = 0;
 	int corn = 0;
 	char retr = 0;
@@ -244,8 +242,15 @@ char queryPlayer(char *name)
 	return retr - '0';
 }
 	
-int rollDice(FILE *fp, int low,int high)
+int rollDice(int low,int high)
 {
+	static FILE *fp; 
+	static int first = 1;
+	if(first)
+	{
+		fp = fopen("/dev/urandom","rb");
+		first = 0;
+	}
 	int seed = fgetc(fp);
 	srand(seed);
 	return (rand() % (high - low)) + low + 1;

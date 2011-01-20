@@ -10,9 +10,8 @@ int main(void)
 	int *cornerPositions = malloc(sizeof(int) * SIDES);
 	
 	//Open /dev/urandom for rollDice
-	FILE *urandom = fopen("/dev/urandom","rb");
 	FILE *propertyFile = fopen("/home/jordan/Documents/Programming/Monopoly Project/properties","rb");
-	if(propertyFile == NULL || urandom == NULL)
+	if(propertyFile == NULL)
 	{
 		puts("ERROR: error in opening file(s)");
 		return 1;
@@ -47,7 +46,17 @@ int main(void)
 	}
 	setFourCorners(linesInPropertyFile,cornerPositions);
 	addCorners(linesInPropertyFile,cornerPositions,&arrayForProperties);
-	if(gameLoop(arrayForProperties,arrayForPlayers,linesInPropertyFile,amntPlayers,cornerPositions,urandom))
+	//Set up GrahicalLoop thread.
+	pthread_t glThread;
+	volatile int isRunning = 0;
+	void* data[4];
+	data[0] = (void*)arrayForProperties;
+	data[1] = (void*)arrayForPlayers;
+	data[2] = (void*)&linesInPropertyFile;
+	data[3] = (void*)&isRunning;
+	pthread_create(&glThread,NULL,graphicalMain,(void *)data);
+	
+	if(gameLoop(arrayForProperties,arrayForPlayers,linesInPropertyFile,amntPlayers,cornerPositions))
 	{
 		puts("ERROR: error from gameLoop() :: non-zero returned");
 	}
@@ -92,7 +101,6 @@ int main(void)
 	}
 	free(arrayForPlayers);
 	//Close FILE stream for /dev/urandom
-	fclose(urandom);
 	fclose(propertyFile);
 	return 0;
 }
