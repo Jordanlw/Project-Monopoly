@@ -281,10 +281,10 @@ static void getReq(SDL_Rect *requirement,TTF_Font *font,SDL_Color fontColor)
 {
 	//Find needed dimensions of each property surface.
 	SDL_Surface *test = TTF_RenderText_Solid(font,"test 123 test 123",fontColor);
-	//4 - Amount of surfaces applied, 4 * 5 - padding of 5, between surfaces.
-	requirement->h = test->h * 4 + 4 * 5;
-	// + 6 - padding on the sides.
-	requirement->w = test->w + 6;
+	//4 - Amount of surfaces applied, 4 * 5 - padding of 5, between surfaces. + 2 for the border
+	requirement->h = test->h * 4 + 4 * 5 + 2;
+	// + 6 - padding on the sides. + 2 for the border
+	requirement->w = test->w + 6 + 2;
 	SDL_FreeSurface(test);
 }
 	
