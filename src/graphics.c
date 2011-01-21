@@ -77,6 +77,7 @@ static void createBoard(SDL_Surface **board,
 	cord.y = 0;
 	int first = 1;
 	int notNow = 0;
+	
 	for(i = 0;i < amntProperties + SIDES;i++,notNow = 0)
 	{
 		if((properties[i])->type == 1)
@@ -221,7 +222,8 @@ static void generateProperty(SDL_Surface **property,
 			free(array);
 			free(full);
 		}	
-		offset.x = (requirement.w - text->w) / 2;
+		//-2 is for the removal of the pixel border.
+		offset.x = ((requirement.w - 2) - text->w) / 2;
 		if(i >= 1)
 		{
 			offset.y += text->h + 5;
@@ -281,9 +283,10 @@ static void getReq(SDL_Rect *requirement,TTF_Font *font,SDL_Color fontColor)
 {
 	//Find needed dimensions of each property surface.
 	SDL_Surface *test = TTF_RenderText_Solid(font,"test 123 test 123",fontColor);
-	//4 - Amount of surfaces applied, 4 * 5 - padding of 5, between surfaces. + 2 for the border
+	//4 - Amount of surfaces applied, 4 * 5 - padding of 5, between surfaces.
+	//+2 on both the w & h, is for the 1pixel wide border on all sides.
 	requirement->h = test->h * 4 + 4 * 5 + 2;
-	// + 6 - padding on the sides. + 2 for the border
+	// + 6 - padding on the sides.
 	requirement->w = test->w + 6 + 2;
 	SDL_FreeSurface(test);
 }
