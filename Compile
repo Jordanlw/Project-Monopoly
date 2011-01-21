@@ -1,0 +1,1 @@
+gcc -g -o Monopoly -Wall src/main.c -lgcc_s -lSDL -lSDL_ttf -lSDL_gfx -pthread
