@@ -25,35 +25,37 @@ void *graphicalMain(void *dataArg)
 	SDL_Surface *screen;
 	if(graphicalInit(&screen))
 	{
+		puts("ERROR: error from graphicalInit()");
 		quit = 1;
 	}
 	TTF_Font *font = TTF_OpenFont("/usr/share/fonts/TTF/mensch.ttf",12);
 	SDL_Color fontColor = {0,0,0};
 	SDL_Surface *board;
 	SDL_Rect requirement;
+	SDL_Rect boardSize;
 	getReq(&requirement,font,fontColor);
-	setBoardSize(properties,amntProperties,&board,requirement);
+	setBoardSize(properties,amntProperties,&board,requirement,&boardSize);
 
 	while(!quit)
 	{
 		refreshBoard(board);
-		createBoard(&board,amntProperties,requirement,properties,players);
+		createBoard(&board,amntProperties,requirement,properties,players,boardSize);
 		
 		SDL_BlitSurface(board,NULL,screen,NULL);
 		SDL_Flip(screen);
 		//Test whether user wants to exit.
 		SDL_Event event;
-		SDL_PollEvent(&event,amntProperties,requirement);
+		SDL_PollEvent(&event);
 		if(event.type == SDL_QUIT)
 		{
 			quit = 1;
 			*isRunning = 0;
 		}
-		SDL_Delay((1/15)*1000);
+		SDL_Delay((1/30)*1000);
 	}
 	SDL_FreeSurface(board);
-	SDL_Quit();
 	TTF_Quit();
+	SDL_Quit();
 	pthread_exit(NULL);
 	
 }
@@ -62,7 +64,8 @@ static void createBoard(SDL_Surface **board,
 						int amntProperties,
 						SDL_Rect requirement,
 						struct property **properties,
-						struct player **players)
+						struct player **players,
+						SDL_Rect boardSize)
 {
 	int i = 0;
 	int corners = 0;
@@ -85,22 +88,43 @@ static void createBoard(SDL_Surface **board,
 			position.x = requirement.w;
 			position.y = requirement.h;
 		}
-		SDL_Surface property;
-		generateProperty(property,amntProperty,properties[i],players,requirement);	
+		SDL_Surface *property;
+		generateProperty(&property,amntProperties,properties[i],players,requirement);
+		cord.x = boardSize.w - position.x;
+		cord.y = boardSize.h - position.y;		
+		SDL_BlitSurface(property,NULL,*board,&cord);
+		position.x += requirement.w;
+		//DEBUG
+		/*printf("prop.w %d,prop.h %d,cord.x %d,cord.y %d,position.x %d,position.y %d,board.w %d,board.h %d\n",
+		property->w,property->h,cord.x,cord.y,position.x,position.y,boardSize.w,boardSize.h);*/
+		
+		SDL_FreeSurface(property);	
 	}
 }
 
-static void generateProperty(SDL_Surface *property,
+static void generateProperty(SDL_Surface **property,
 							 int amntProperty,
 							 struct property *properties,
 							 struct player **players,
 							 SDL_Rect requirement)
 {
 	*property = SDL_CreateRGBSurface(0,requirement.w,requirement.h,32,0,0,0,0);
+	SDL_FillRect(*property,NULL,SDL_MapRGB((*property)->format,255,255,255));
 	SDL_Rect offset;
 	offset.y = 5;
-	SDL_Surface text = 0;
-	TTF_Font *font = TTF_OpenFont("/usr/share/fonts/TTF/mensch.ttf",12);
+	SDL_Surface *text = 0;
+	static int first = 1;
+	static TTF_Font *font;
+	if(first)
+	{
+		font = TTF_OpenFont("/usr/share/fonts/TTF/mensch.ttf",12);
+		if(!font)
+		{
+			puts("ERROR: font pointer is null, in generateProperty()");
+		}
+		first = 0;
+	}
+		
 	SDL_Color fontColor = {0,0,0};
 	int i = 0;
 	int amnt = 4;
@@ -108,39 +132,48 @@ static void generateProperty(SDL_Surface *property,
 	{
 		if(i == 0)
 		{
-			text = TTF_RenderText_Solid(font,properties->name,textcolor);
+			text = TTF_RenderText_Solid(font,properties->name,fontColor);
 		}
 		if(i == 1)
 		{
 			if(properties->owner > -1)
 			{
-				text = TTF_RenderText_Solid(font,(players[properties->owner])->id,textcolor);
+				text = TTF_RenderText_Solid(font,(players[properties->owner])->id,fontColor);
 			}
 			else
 			{
-				text = TTF_RenderText_Solid(font,"No owner",textcolor);
+				text = TTF_RenderText_Solid(font,"No owner",fontColor);
 			}
 		}
 		if(i == 2)
 		{
 			char *array = malloc(100);
-			itoa(properties->hotels,array,10);
-			text = TTF_RenderText_Solid(font,array,textcolor);
+			char *full = malloc(100);
+			sprintf(array,"%d",properties->hotels);
+			sprintf(full,"Hotels: ");
+			strcat(full,array);
+			text = TTF_RenderText_Solid(font,full,fontColor);
 			free(array);
+			free(full);
 		}
 		if(i == 3)
 		{
 			char *array = malloc(100);
-			itoa(properties->value,array,10);
-			text = TTF_RenderText_Solid(font,array,textcolor);
+			char *full = malloc(100);
+			sprintf(array,"%d",properties->value);
+			sprintf(full,"Price: ");
+			strcat(full,array);
+			text = TTF_RenderText_Solid(font,full,fontColor);
 			free(array);
+			free(full);
 		}	
-		offset.x = (requirement.w - text.w) / 2;
+		offset.x = (requirement.w - text->w) / 2;
 		if(i >= 1)
 		{
-			offset.y += text.h + 5;
+			offset.y += text->h + 5;
 		}
-		SDL_BlitSurface(text,NULL,property,&offset);
+		SDL_BlitSurface(text,NULL,*property,&offset);
+		SDL_FreeSurface(text);
 	}		
 }
 static void refreshBoard(SDL_Surface *board)
@@ -150,14 +183,15 @@ static void refreshBoard(SDL_Surface *board)
 static void setBoardSize(struct property **properties,
 						 int amntProperties,
 						 SDL_Surface **board,
-						 SDL_Rect requirement)
+						 SDL_Rect requirement,
+						 SDL_Rect *boardSize)
 {
 	int corners = 0;
 	int i = 0;
-	int prop = 0;
+	int prop = 1;
 	int w = 0;
 	int h = 0;
-	for(i = 0,prop = 0;i < amntProperties;i++,prop++)
+	for(i = 0,prop = 1;i < amntProperties;i++,prop++)
 	{
 		if((properties[i])->type == 1)
 		{
@@ -165,25 +199,24 @@ static void setBoardSize(struct property **properties,
 		}
 		if(corners == 1 || corners == 3)
 		{
-			if(i-prop+1 > w)
+			if(prop > w)
 			{
-				w = i-prop+1;
+				w = prop;
 			}
-			prop = 0;
+			prop = 1;
 		}
 		if(corners == 2 || corners || 4)
 		{
-			if(i-prop+1 > h)
+			if(prop > h)
 			{
-				h = i-prop+1;
+				h = prop;
 			}
-			prop = 0;
+			prop = 1;
 		}
 	}
-	SDL_Rect boardRect;
-	boardRect.w = w * requirement.w + requirement.h * 2;
-	boardRect.h = h * requirement.h + requirement.w * 2;
-	*board = SDL_CreateRGBSurface(0,boardRect.w,boardRect.h,32,0,0,0,0);	
+	boardSize->w = w * requirement.w + (requirement.h * 2);
+	boardSize->h = h * requirement.h + (requirement.w * 2);
+	*board = SDL_CreateRGBSurface(0,boardSize->w,boardSize->h,32,0,0,0,0);	
 }
 
 static void getReq(SDL_Rect *requirement,TTF_Font *font,SDL_Color fontColor)

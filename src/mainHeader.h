@@ -5,7 +5,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 #include <pthread.h>
-#include <SDL_rotozoom.h>
 #include "structs.h"
 
 #define SIDES 4
@@ -43,10 +42,11 @@ int kbhit(void);
 void auctionHouse(int ,struct player **,struct property **,int ,int );
 void *graphicalMain(void *);
 static int graphicalInit(SDL_Surface **);
-static void setBoardSize(struct property **,int ,SDL_Surface **,SDL_Rect );
+static void setBoardSize(struct property **,int ,SDL_Surface **,SDL_Rect,SDL_Rect *);
 static void getReq(SDL_Rect *,TTF_Font *,SDL_Color );
 static void refreshBoard(SDL_Surface *);
-
+static void createBoard(SDL_Surface **,int ,SDL_Rect ,struct property **,struct player **,SDL_Rect);
+static void generateProperty(SDL_Surface **,int ,struct property *,struct player **,SDL_Rect );
 #include "propertyStruct.c"
 #include "playerStruct.c"
 #include "multiUseStruct.c"
